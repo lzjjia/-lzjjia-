@@ -1,0 +1,14 @@
+# 忽略环境变量配置（极其重要！）
+.env
+
+# 忽略 Python 的缓存编译文件和目录（比如你在截图中看到的那些）
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+
+
+# 忽略系统自动生成的隐藏文件 (Mac/Windows)
+.DS_Store
+Thumbs.db
