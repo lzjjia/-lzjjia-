@@ -21,7 +21,6 @@ ATLAS 是一个基于 LangGraph 的命令行学术学习助手。它会先根据
 - [agents/](file:///e:/agent_learning/ATLAS/agents)：各专业 Agent
 - [tools/](file:///e:/agent_learning/ATLAS/tools)：工具（搜索、笔记、流式 callback）
 - [config/llm_config.py](file:///e:/agent_learning/ATLAS/config/llm_config.py)：LLM 配置与环境变量加载
-- [.env](file:///e:/agent_learning/ATLAS/.env)：本地环境变量（不建议提交）
 - [requirements.txt](file:///e:/agent_learning/ATLAS/requirements.txt)：Python 依赖
 
 ## 环境要求
