@@ -118,7 +118,9 @@ async def run_atlas():
                         print(f"\nATLAS [{label}]")
                         print("─" * 40)
                         print(full_response)
-                        print("─" * 40)
+                    else:
+                        pass
+                    print(f"\n{'-' * 40}\n")
                     break
 
                 elif event_type == "token":
@@ -149,8 +151,7 @@ async def run_atlas():
                     print()  # 工具结束换行
 
                 elif event_type == "llm_end":
-                    if header_printed:
-                        print(f"\n{'─' * 40}\n")
+                    pass
 
         # 并发执行图和流消费
         try:

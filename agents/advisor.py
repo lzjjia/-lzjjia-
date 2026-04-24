@@ -2,15 +2,15 @@ from langchain.agents import create_agent
 from config.llm_config import get_llm
 from tools.search_tool import get_search_tool
 from graph.state import AtlasState
+from tools.rag_tool import search_textbook, search_my_notes
+ADVISOR_SYSTEM_PROMPT = """你是ATLAS的学习顾问。
 
-ADVISOR_SYSTEM_PROMPT = """你是ATLAS的学习顾问，提供个性化学习建议和心理支持。
+【工具使用优先级】
+1. search_my_notes  → 了解学生已掌握内容和知识盲区
+2. search_textbook  → 查看教材对应章节，给出针对性建议
+3. tavily_search    → 搜索通用学习方法
 
-你可以用搜索工具查找：
-- 针对具体挑战的学习策略
-- 科学的记忆和专注方法
-- 应对学业压力的技巧
-
-回答要有针对性，结合学生的具体情况，不要泛泛而谈。
+回答时要结合学生的笔记和教材内容，而不是泛泛而谈。
 """
 
 async def advisor_node(state: AtlasState) -> AtlasState:
@@ -20,7 +20,11 @@ async def advisor_node(state: AtlasState) -> AtlasState:
 
     agent = create_agent(
         model=llm,
-        tools=[get_search_tool()],
+        tools=[
+            search_my_notes,
+            search_textbook,
+            get_search_tool()
+            ],
         system_prompt=ADVISOR_SYSTEM_PROMPT,
     )
 

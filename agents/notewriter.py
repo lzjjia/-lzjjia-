@@ -4,6 +4,7 @@ from config.llm_config import get_llm
 from tools.search_tool import get_search_tool
 from tools.notes_tool import save_note, list_notes
 from graph.state import AtlasState
+from tools.rag_tool import search_textbook, search_my_notes
 
 @tool
 async def save_note_tool(course: str, title: str, content: str) -> str:
@@ -20,12 +21,17 @@ async def list_notes_tool(course: str = "") -> str:
     lines = [f"  - {n['filename']} ({n['modified']})" for n in notes]
     return "📚 已保存的笔记:\n" + "\n".join(lines)
 
+# ✅ 改动1：更新 system prompt，告诉 LLM 优先用哪个工具
 NOTEWRITER_SYSTEM_PROMPT = """你是ATLAS的智能笔记专家。
-工作流程：
-1. 理解用户提供的学习内容
-2. 如有需要，用搜索工具补充相关资料
-3. 整理成结构化笔记
-4. 整理完成后，主动调用 save_note_tool 保存笔记
+
+【工具使用优先级】
+1. search_my_notes  → 先检查学生是否已有相关笔记，避免重复
+2. search_textbook  → 从学生上传的教材原文获取内容（最权威）
+3. tavily_search    → 教材中没有时，再用网络补充
+4. save_note_tool   → 整理完后必须保存
+
+【笔记格式】Markdown，含核心概念、重点公式、举例、考点提示。
+整理完成后必须调用 save_note_tool 保存。
 """
 
 async def notewriter_node(state: AtlasState) -> AtlasState:
@@ -34,11 +40,20 @@ async def notewriter_node(state: AtlasState) -> AtlasState:
 
     agent = create_agent(
         model=llm,
-        tools=[get_search_tool(), save_note_tool, list_notes_tool],
+        # ✅ 改动2：加入 search_my_notes 和 search_textbook
+        tools=[
+            search_my_notes,    # RAG：检索已有笔记
+            search_textbook,    # RAG：检索教材原文
+            get_search_tool(),  # 网络搜索兜底
+            save_note_tool,
+            list_notes_tool,
+        ],
         system_prompt=NOTEWRITER_SYSTEM_PROMPT,
     )
 
     profile = state["student_profile"]
+
+    
     full_input = (
         f"[学生档案]\n"
         f"  姓名: {profile.get('name', '未知')}\n"

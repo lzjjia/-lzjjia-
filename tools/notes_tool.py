@@ -28,6 +28,16 @@ async def save_note(course: str, title: str, content: str) -> str:
     """
     async with aiofiles.open(filename, "w", encoding="utf-8") as f:
         await f.write(note_content)
+    try:
+        from rag.vectorstore import add_note_to_vectorstore
+        await add_note_to_vectorstore(
+            content = note_content,
+            course = course,
+            title = title,
+            filepath = str(filename)
+        )
+    except Exception as e:
+        print(f"\n  ⚠️ 知识库同步失败（不影响笔记保存）: {e}")
     
     return str(filename)
 
