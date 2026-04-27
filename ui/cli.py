@@ -3,7 +3,8 @@ import sys
 from graph.workflow import build_atlas_graph
 from graph.state import AtlasState, StudentProfile
 from tools.streaming import StreamingCallback
-
+from memory.database import save_profile, load_profile
+import uuid
 AGENT_LABELS = {
     "planner":    "📅 计划专家",
     "notewriter": "📝 笔记专家",
@@ -18,9 +19,12 @@ TOOL_LABELS = {
     "list_notes_tool":            "📂 查看笔记",
 }
 
-def collect_student_profile() -> StudentProfile:
+def collect_student_profile(name:str = "") -> StudentProfile:
     print("\n=== ATLAS 学生档案初始化 ===")
-    name = input("你的名字：")
+    
+    if not name:
+        name  = input("你的名字： ").strip() or "同学"
+    
     print("\n学习风格:")
     print("1. visual  (视觉型)")
     print("2. reading (阅读型)")
@@ -48,13 +52,33 @@ def collect_student_profile() -> StudentProfile:
 async def run_atlas():
     print("🎓 欢迎使用 ATLAS - 智能学术助手系统")
     print("=" * 50)
-
+    session_id = str(uuid.uuid4())#每次启动之前生成唯一的会话ID
     atlas = build_atlas_graph()
-    profile = collect_student_profile()
+    # profile = collect_student_profile()
     messages = []
+    print("\n你的名字：", end="")
+    name = input().strip() or "同学"
 
-    print(f"\n✅ 档案已建立！你好，{profile['name']}！")
-    print("💡 输入 'quit' 退出\n")
+    existing_profile = load_profile(name)
+
+    if existing_profile:
+        # 老用户：直接加载档案
+        profile = existing_profile
+        print(f"\n👋 欢迎回来，{name}！已加载你的学习档案。")
+        print(f"   课程：{', '.join(profile['current_courses'])}")
+        print(f"   挑战：{', '.join(profile['challenges'])}")
+        print("\n是否需要更新档案？(y/n，直接回车跳过): ", end="")
+        update = input().strip().lower()
+        if update == "y":
+            profile = collect_student_profile(name = name)
+            save_profile(profile)
+            print("✅ 档案已更新！")
+    else:
+    # 新用户：走完整问卷，然后保存
+        print(f"\n👋 你好，{name}！首次使用，请完善你的学习档案。")
+        profile = collect_student_profile(name = name)
+        save_profile(profile)
+        print(f"\n✅ 档案已建立并保存！下次直接输入名字即可。")
 
     while True:
         try:
@@ -85,6 +109,7 @@ async def run_atlas():
             "next_agent": "",
             "iteration": 0,
             "callbacks": [callback],   # ✅ 注入 callback
+            "session_id": session_id,  # 新增会话ID字段 
         }
 
         print("\n⏳ ATLAS 思考中...", end="", flush=True)

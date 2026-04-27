@@ -25,3 +25,4 @@ class AtlasState(TypedDict):
     next_agent: str
     iteration: int
     callbacks: List[Any]
+    session_id: str #用来标示当前的对话

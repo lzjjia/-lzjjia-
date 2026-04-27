@@ -11,7 +11,7 @@ def get_llm(callbacks=None):
     阿里云DashScope完全兼容Openai SDK
     """
     return ChatOpenAI(
-        model_name = "qwen-plus",
+        model_name = "qwen-max",
         api_key = os.getenv("DASHSCOPE_API_KEY"),
         base_url = os.getenv("DASHSCOPE_BASE_URL"),
         temperature=0.7,

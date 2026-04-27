@@ -39,8 +39,8 @@ def list_files(course: str = None):
 
 def main():
     parser = argparse.ArgumentParser(description="ATLAS 教材索引工具")
-    parser.add_argument("--file", "-f", type=str, help="文件路径（PDF/TXT/MD）")
-    parser.add_argument("--course", "-c", type=str, help="课程名称")
+    parser.add_argument("--file", "-f", type=str, default = r'E:\agent_learning\ATLAS\data\redis.pdf' ,help="文件路径（PDF/TXT/MD）")
+    parser.add_argument("--course", "-c", type=str, default='Redis',help="课程名称")
     parser.add_argument("--list", "-l", action="store_true", help="列出已索引文件")
     parser.add_argument("--chunk-size", type=int, default=500)
     parser.add_argument("--chunk-overlap", type=int, default=50)
@@ -55,7 +55,7 @@ def main():
     if not args.course:
         args.course = Path(args.file).stem.split("_")[0]
         print(f"⚠️  未指定课程名，使用: 「{args.course}」")
-
+    
     asyncio.run(index_file(args.file, args.course, args.chunk_size, args.chunk_overlap))
 
 if __name__ == "__main__":

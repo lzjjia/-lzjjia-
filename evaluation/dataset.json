@@ -1,0 +1,51 @@
+[
+    {
+        "question": "Redis有哪些数据类型?",
+        "ground_truth": "Redis有String、Hash、List、Set、Zset五种基础类型，以及BitMap、HyperLogLog、GEO、Stream四种高级类型"
+    },
+    {
+    "question": "Redis持久化有哪些方式？",
+    "ground_truth": "Redis持久化有RDB和AOF两种方式，RDB是快照，AOF是日志追加"
+    },
+    {
+    "question": "Redis分布式锁怎么实现？",
+    "ground_truth": "可以用SETNX命令或SET key value EX seconds NX实现分布式锁"
+  },
+  {
+    "question": "Redis过期删除策略和内存淘汰策略有什么区别?",
+    "ground_truth": "过期删除策略针对的是‘时间’，处理生命周期结束的数据。内存淘汰策略针对的是‘空间’，处理内存不足的极端情况." 
+  },
+  {"question": "Redis 的全称是什么？它属于什么类型的数据库？",
+  "ground_truth": "Redis 全称是 REmote DIctionary Service，是开源的基于内存的数据结构存储系统，可作为数据库、缓存、消息代理使用。"
+  },
+  {"question": "RDB 持久化的优缺点分别是什么？",
+  "ground_truth": "优点是恢复速度快、文件紧凑；缺点是可能丢失快照间数据、fork 子进程可能阻塞主线程。"
+  },
+  {"question": "AOF 的三种写回策略是什么？",
+    "ground_truth": "Always（同步写回）、Everysec（每秒写回）、No（操作系统控制写回）。"
+  },
+  { "question": "Redis 分布式锁的核心命令格式是什么？",
+    "ground_truth": "SET lock_key unique_value NX PX 过期时间，保证加锁原子性与防误删。"
+  },
+  {"question": "Redis 分布式锁的实现原理是什么？",
+    "ground_truth": "利用SETNX命令实现分布式锁，确保在多线程环境下仅有一个线程能获取到锁。"
+  },
+  {"question": "Redis 中如何安全删除大 Key？",
+  "ground_truth": "Redis 4.0 + 使用 unlink 异步删除；或对集合类型分批次逐步删除。"
+  },
+  {"question": "Redis 6.0 引入多线程的目的是什么？",
+  "ground_truth": "用于处理网络 I/O，提升网络吞吐性能，命令执行依然是单线程。"
+  },
+  {"question": "LRU 和 LFU 淘汰算法的核心区别是什么？",
+  "ground_truth": "LRU 淘汰最近最少使用的数据；LFU 淘汰最近最不经常使用（按访问频次）的数据，能解决缓存污染问题。"
+  },
+  {"question": "Redis 过期删除策略采用的是什么组合？",
+  "ground_truth": "惰性删除 + 定期删除组合策略。"
+  },
+  {"question": "Redis 默认的内存淘汰策略是什么？",
+  "ground_truth": "noeviction，内存超限后不淘汰数据，直接拒绝写入。"
+  },
+  {"question": "RDB 持久化的优缺点分别是什么？",
+  "ground_truth": "优点是恢复速度快、文件紧凑；缺点是可能丢失快照间数据、fork 子进程可能阻塞主线程。"
+  }
+]
